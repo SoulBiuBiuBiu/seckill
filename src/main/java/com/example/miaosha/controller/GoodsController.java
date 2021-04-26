@@ -3,9 +3,11 @@ package com.example.miaosha.controller;
 import com.example.miaosha.domain.MiaoshaUser;
 import com.example.miaosha.redis.GoodsKey;
 import com.example.miaosha.redis.RedisService;
+import com.example.miaosha.result.CodeMsg;
 import com.example.miaosha.result.Result;
 import com.example.miaosha.service.GoodsService;
 import com.example.miaosha.service.MiaoshaUserService;
+import com.example.miaosha.vo.GoodsDetailVo;
 import com.example.miaosha.vo.GoodsVo;
 import com.example.miaosha.vo.LoginVo;
 import com.mysql.cj.util.StringUtils;
@@ -56,14 +58,10 @@ public class GoodsController {
         return html;
     }
 
-    @RequestMapping(value = "/detail/{goodsId}",produces = "text/html")
+    @RequestMapping(value = "/detail/{goodsId}")
     @ResponseBody
-    public String toDetail(Model model,HttpServletRequest request, HttpServletResponse response, MiaoshaUser user, @PathVariable("goodsId") long goodsId){
-        //snowflack算法
-        model.addAttribute("user",user);
+    public Result<GoodsDetailVo> toDetail(Model model,HttpServletRequest request, HttpServletResponse response, MiaoshaUser user, @PathVariable("goodsId") long goodsId){
         GoodsVo goods=goodsService.getGoodsVoById(goodsId);
-
-        model.addAttribute("goods",goods);
 
         long startAt = goods.getStartDate().getTime();
         long endAt =goods.getEndDate().getTime();
@@ -81,10 +79,13 @@ public class GoodsController {
             miaoshaStatus=1;
             remainSeconds=0;
         }
-        model.addAttribute("miaoshaStatus",miaoshaStatus);
-        model.addAttribute("remainSeconds",remainSeconds);
+        GoodsDetailVo vo=new GoodsDetailVo();
+        vo.setGoods(goods);
+        vo.setMiaoshaStatus(miaoshaStatus);
+        vo.setRemainSeconds(remainSeconds);
+        vo.setMiaoshaUser(user);
 
-        return "";
+        return Result.success(vo);
     }
 
 
