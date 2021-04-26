@@ -32,7 +32,7 @@ public class MiaoshaUserService {
         if(user!=null) return user;
         user = miaoshaUserDao.getById(id);
         if(user!=null){
-            redisService.set(MiaoshaUserKey.getByID,String.valueOf(id),MiaoshaUser.class);
+            redisService.set(MiaoshaUserKey.getByID,String.valueOf(id),user);
         }
         return user;
     }
