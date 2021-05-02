@@ -1,6 +1,7 @@
 package com.example.miaosha.controller;
 
 import com.example.miaosha.domain.User;
+import com.example.miaosha.rabbitMQ.MQSender;
 import com.example.miaosha.redis.RedisService;
 import com.example.miaosha.redis.UserKey;
 import com.example.miaosha.result.CodeMsg;
@@ -20,6 +21,39 @@ public class HelloController {
 
     @Autowired
     RedisService redisService;
+    @Autowired
+    MQSender mqSender;
+
+    @RequestMapping("/mq")
+    @ResponseBody
+    public Result<Boolean> mq(){
+        mqSender.send("hello,imooc!");
+        return Result.success(true);
+    }
+
+    @RequestMapping("/mq/topic")
+    @ResponseBody
+    public Result<Boolean> sendtopic(){
+        mqSender.sendTopic("hello,imooc!");
+        return Result.success(true);
+    }
+
+    @RequestMapping("/mq/fanout")
+    @ResponseBody
+    public Result<Boolean> sendFanout(){
+        mqSender.sendFanout("hello,fanout!");
+        return Result.success(true);
+    }
+
+    @RequestMapping("/mq/header")
+    @ResponseBody
+    public Result<Boolean> header(){
+        mqSender.sendHeader("hello,imooc!");
+        return Result.success(true);
+    }
+
+
+
 
     @RequestMapping("/")
     @ResponseBody
